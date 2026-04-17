@@ -1,0 +1,188 @@
+/* YOUR PROVIDED CSS INTEGRATED BELOW */
+    body {
+        background: #f4f6f9;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        overflow-x: hidden;
+    }
+
+    .navbar {
+        z-index: 1050;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 250px;
+        height: 100vh;
+        position: fixed;
+        top: 56px;
+        left: 0;
+        background: #212529;
+        padding: 20px 15px;
+        overflow-y: auto;
+        transition: all 0.3s ease;
+        z-index: 1040;
+    }
+
+    .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding: 0 8px;
+    }
+
+    .sidebar-header .logo-text {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .toggle-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.4rem;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 6px;
+    }
+
+    .toggle-btn:hover {
+        background: rgba(255,255,255,0.1);
+    }
+
+    /* Sidebar Links */
+    .sidebar a {
+        display: flex;
+        align-items: center;
+        color: #fff;
+        padding: 12px 15px;
+        text-decoration: none;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        transition: all 0.25s ease;
+    }
+
+    .sidebar a:hover {
+        background: #343a40;
+        transform: translateX(4px);
+    }
+
+    .sidebar a span:first-child {
+        width: 24px;
+        font-size: 1.2rem;
+    }
+
+    /* COLLAPSED STATE (Desktop) */
+    .sidebar.collapsed {
+        width: 78px;
+    }
+
+    .sidebar.collapsed .link-text,
+    .sidebar.collapsed .logo-text {
+        display: none;
+    }
+
+    .sidebar.collapsed .sidebar-header {
+        justify-content: center;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+        margin-left: 250px; /* Aligned with sidebar width */
+        padding: 20px 30px;
+        padding-top: 85px;
+        transition: all 0.3s ease;
+        min-height: 100vh;
+    }
+
+    .main.expanded {
+        margin-left: 78px;
+    }
+
+    /* HERO */
+    .hero {
+        background: linear-gradient(135deg, #0d6efd, #6610f2);
+        color: white;
+        padding: 45px 35px;
+        border-radius: 16px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .hero h2 {
+        font-size: 2.35rem;
+        margin-bottom: 8px;
+    }
+
+    /* CARDS & STATS */
+    .card {
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card.animate-up {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .stat-box .card {
+        transition: all 0.4s ease;
+    }
+
+    .stat-box .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    /* PROGRESS */
+    .progress {
+        height: 9px;
+        border-radius: 10px;
+        background: #e9ecef;
+    }
+
+    .progress-bar {
+        border-radius: 10px;
+    }
+
+    /* NAV SEARCH STYLE */
+    .search-input {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white !important;
+    }
+    .search-input::placeholder { color: rgba(255,255,255,0.6); }
+
+    /* MOBILE REFINEMENTS */
+    @media (max-width: 768px) {
+        .sidebar {
+            left: -270px;
+            top: 0; /* Full height on mobile */
+            height: 100%;
+        }
+        
+        .sidebar.active {
+            left: 0;
+        }
+        
+        .main {
+            margin-left: 0 !important; /* Dashboard content to top */
+            padding: 20px 15px;
+            padding-top: 100px; /* Space for the stacked navbar items */
+        }
+        
+        .hero h2 {
+            font-size: 1.9rem;
+        }
+
+        .navbar-collapse {
+            background: #212529;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+    }
