@@ -2,11 +2,16 @@
 namespace App\Helpers;
 
 use RuntimeException;
+use App\Utils\EnvParser;
+
+$env = new EnvParser();
+$env->load(__DIR__ . '/../../.env');
 class Database {
 
     private $conn;
     private $config;
     private static ?Database $instance = null;
+    
     public function __construct()
     {
         $this->loadConfig();
@@ -79,6 +84,22 @@ class Database {
     
     public function getConnection(){
         return $this->conn;
+    }
+    
+    public function lastInsertId(): string {
+        return $this->conn->lastInsertId();
+    }
+    
+    public function beginTransaction(): bool {
+        return $this->conn->beginTransaction();
+    }
+    
+    public function commit(): bool {
+        return $this->conn->commit();
+    }
+    
+    public function rollBack(): bool {
+        return $this->conn->rollBack();
     }
 }
 

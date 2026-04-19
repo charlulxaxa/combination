@@ -15,8 +15,8 @@ class UserModel {
         $result = $this->conn->query($sql);
         $users = [];
 
-        if ($result->rowCount() > 0) {
-            while($row = $result->fetch()) {
+        if ($result && $result->rowCount() > 0) {
+            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                 $users[] = $row;
             }
         }
@@ -25,63 +25,86 @@ class UserModel {
     }
 
     public function getUser($id) {
-        $sql = "SELECT * FROM account WHERE id = ?";
+        $sql = "SELECT * FROM account WHERE account_id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$id]);
-        return $stmt->fetch();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function getUserByUsername($username) {
-        $sql = "SELECT * FROM account WHERE username = ?";
+        $sql = "SELECT a.account_id, a.username, a.email,a.password, u.first_name, u.last_name
+                FROM account a
+                JOIN user u ON a.account_id = u.account_id
+                WHERE a.username = ?";
+                
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$username]);
-        return $stmt->fetch();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function updateUser($data) {
-        $sql = "UPDATE account SET username = ?, email = ? WHERE id = ?";
+        $sql = "UPDATE account SET username = ?, email = ? WHERE account_id = ?";
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([
             $data['username'],
             $data['email'],
-            $data['id']
+            $data['account_id']
         ]);
     }
 
     public function insert($data) {
-        try{
-            $sql = "INSERT INTO account (username, password, email) VALUES (:username, :password, :email)";
+        try {
+            $this->conn->beginTransaction();
+
+            // Insert into account
+            $sql = "INSERT INTO account (username, password, email) 
+                    VALUES (:username, :password, :email)";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':username',$data['username'], PDO::PARAM_STR);
-            $stmt->bindParam(':password',$data['password'], PDO::PARAM_STR);
-            $stmt->bindParam(':email',$data['email'], PDO::PARAM_STR);
-            if ($stmt->execute()) {
-                return true;
-            }
+            $stmt->execute([
+                ':username' => $data['username'],
+                ':password' => $data['password'],
+                ':email'    => $data['email']
+            ]);
+
+            $last_id = $this->conn->lastInsertId();
+
+            // Insert into user
+            $sql = "INSERT INTO user (account_id, first_name, last_name) 
+                    VALUES (:account_id, :first_name, :last_name)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([
+                ':account_id' => $last_id,
+                ':first_name' => $data['first_name'],
+                ':last_name'  => $data['last_name']
+            ]);
+    
+            $this->conn->commit();
+            return true;
+
+        } catch (\PDOException $e) {
+            $this->conn->rollBack();
+            error_log("User insert error: " . $e->getMessage());
             return false;
-        } catch(\PDOException $e) {
-            echo "Error: " . $e->getMessage();
         }
     }
 
     public function deleteUser($id) {
-        $sql = "DELETE FROM account WHERE id = ?";
+        $sql = "DELETE FROM Account WHERE account_id = ?";
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([$id]);
     }
 
-   public function checkUsernameAvailability($username) {
-        $sql = "SELECT id FROM account WHERE username = ?";
+    public function checkUsernameAvailability($username) {
+        $sql = "SELECT account_id FROM Account WHERE username = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$username]);
-
         return $stmt->rowCount() === 0;
     }
+
     public function checkEmailAvailability($email) {
-        $sql = "SELECT id FROM account WHERE email = ?";
+        $sql = "SELECT account_id FROM Account WHERE email = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$email]);
-
         return $stmt->rowCount() === 0;
     }
 }

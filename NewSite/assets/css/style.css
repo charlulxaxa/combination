@@ -51,7 +51,7 @@ body::after{
 /* CONTAINER */
 .container{
     width:900px;
-    height:560px;
+    height:600px;
     position:relative;
     border-radius:20px;
     overflow:hidden;
@@ -114,6 +114,7 @@ form{
     display:flex;
     flex-direction:column;
     gap:15px;
+    
 }
 
 /* INPUT */
@@ -231,4 +232,13 @@ button:hover{
 .input-box input:focus {
     border-color: #667eea;
     box-shadow: 0 0 10px rgba(102,126,234,0.25);
+}
+.error, .unavailable{
+    color:red;
+}
+.checking{
+    color: #FF9800;
+}
+.available {
+            color: #4CAF50;
 }

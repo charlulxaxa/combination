@@ -1,3 +1,17 @@
+<?php
+session_start();
+
+$user = null;
+
+if(isset($_SESSION['user_data'])){
+$user = $_SESSION['user_data'];
+}else{
+   header('Location: login.php');
+   $_SESSION['error'] = 'You need to Login';
+}
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,23 +30,23 @@
 
   <!-- NAVBAR -->
   <nav class="navbar navbar-dark bg-dark px-3 fixed-top">
-    <a class="navbar-brand fw-bold" href="#">📘 MyLMS</a>
+    <a class="navbar-brand fw-bold" href="#" style="color:black">📘 EduRift</a> <!-- Endless rift of learnings -->
     
     <form class="d-flex ms-auto"> 
-      <button>+Class Code</button>  
+      <button style="text-wrap:nowrap;">+Class Code</button>  
       <input class="form-control me-2" type="search" placeholder="Search courses...">
       <button class="btn btn-success">Search</button>
       
     </form>
     <div class="dropdown">
-      <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-      User
+      <a class="btn btn-secondary dropdown-toggle text-center justify-content-center align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      👤
       </a>
 
       <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" href="#">Action</a></li>
-        <li><a class="dropdown-item" href="#">Another action</a></li>
-        <li><a class="dropdown-item" href="#">Something else here</a></li>
+        <li><a class="dropdown-item" href="#"><?php echo $user['first_name'] ?? '';?></a></li>
+        <li><a class="dropdown-item" href="./assets/pages/account_settings.php">Account Settings</a></li>
+        <li><a class="dropdown-item" href="./logout.php">Logout</a></li>
       </ul>
     </div>
   </nav>
@@ -52,7 +66,7 @@
   <div class="main">
     <!-- HERO - Now properly framed -->
     <div class="hero">
-      <h2>Welcome Back 👋</h2>
+      <h2>Welcome Back <?php echo isset($user) ? $user['first_name']." ".$user['last_name'] : ""?>👋</h2>
       <p class="fs-5 mb-0">Continue your learning journey today</p>
     </div>
 

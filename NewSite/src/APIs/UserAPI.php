@@ -6,7 +6,7 @@ require_once "../../vendor/autoload.php";
 use App\Helpers\Database;
 use App\Models\UserModel;
 use App\Controllers\UserController;
-use App\Utils\EnvParser;
+
 
 class UserAPI {
     private $userController;

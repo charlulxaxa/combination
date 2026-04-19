@@ -14,6 +14,29 @@ class UserController {
     /**
      * Validate and sanitize user input for registration
      */
+    public function validateAndProcessLogin($input){
+        Validator::clearErrors();
+        $fieldTypes = [
+            'username' => 'username',
+            'password' => 'password'
+        ];
+        $sanitized = Sanitizer::sanitizeArray($input, $fieldTypes);
+        
+        $userId = $this->user->getUserByUsername($sanitized['user_username']);
+        
+        if (password_verify($sanitized['user_password'],$userId['password'])) {
+            return [
+                'logged_in' => true,
+                'data' => $userId
+            ];
+        } else {
+            return [
+                'success' => false,
+                'errors' => ['Invalid username and Password']
+            ];
+        }
+    }
+    
     public function validateAndProcessRegistration($input) {
         Validator::clearErrors();
         
@@ -56,13 +79,12 @@ class UserController {
         }
         
         // Validate password
-        if (!Validator::validatePassword($sanitized['password'], $sanitized['confirm_pass'])) {
+        if (!Validator::validatePassword($sanitized['password'], $sanitized['confirm_pass']) ) {
             return [
                 'success' => false,
                 'errors' => Validator::getErrors()
             ];
         }
-        
         // Check if username already exists
         if (!$this->user->checkUsernameAvailability($sanitized['username'])) {
             return [
@@ -84,7 +106,7 @@ class UserController {
             return [
                 'success' => true,
                 'data' => [
-                    'id' => $userId,
+                    'user_id' => $userId,
                     'username' => $sanitized['username'],
                     'email' => $sanitized['email']
                 ]
